@@ -17,29 +17,21 @@ from dotenv import load_dotenv
 import json
 #hghjjhghghj
 
-# Get data for a ticker from yFinance
-# Input: 
-#    ticker : the ticker to get data for
-#    start : from start date 
-#    end: to end date
-# Output: A data frame with date as index and Adj Close prices as the ticker name
-def yfinance_tickers_data_by_dates(tickers, start, end):
-    df = yf.download(tickers, start=start_date, end=end_date)
-    # Drop extra columns
-    #df.drop( columns= ["Open", "High", "Low", "Close", "Volume"], inplace = True)
-    # Rename the Close Column to Goog
-    #df.rename(columns={"Adj Close": tickers}, inplace = True)
-    return df 
 
 # Get data for a ticker from yFinance for last 10 years
 # Input: 
 #    ticker : the ticker to get data for
 # Output: A data frame with date as index and Adj Close prices as the ticker name
-def yfinance_tickers_data(ticker):
+def yfinance_tickers_data(ticker, start_date, end_date):
+    
+    
+    ticker_data = yf.Ticker(ticker)
+    df =ticker_data.history(start=start_date, end=end_date)
+    return df
     # get ticker object
-    ticker = yf.Ticker(ticker)
+    #ticker = yf.Ticker(ticker)
     # get historical market data
-    df = ticker.history(period="max")
+    #df = ticker.history(start_date, end_date)
     #hist
     return df 
 
@@ -47,7 +39,7 @@ def yfinance_tickers_data(ticker):
 # Input: 
 #    ticker : the ticker to get data for
 # Output: json object with data
-def eia_consumption_data_by_series(api_key, series_id="NG.NA1490_STX_2.A"):
+def eia_consumption_data_by_series(api_key, series_id):
 
     # Create variable to hold request url
     api_url = f"http://api.eia.gov/series/?api_key={api_key}&series_id={series_id}"
