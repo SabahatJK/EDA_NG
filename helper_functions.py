@@ -27,6 +27,7 @@ def yfinance_tickers_data(ticker, start_date, end_date):
     
     ticker_data = yf.Ticker(ticker)
     df =ticker_data.history(start=start_date, end=end_date)
+    df = df.drop(["Open", "High", "Low", "Volume", "Dividends", "Stock Splits" ], axis=1)
     return df
     # get ticker object
     #ticker = yf.Ticker(ticker)
@@ -60,6 +61,17 @@ def eia_category_info(api_key, category_id="480236"):
     data = response_data.json()
     print(json.dumps(data, indent=4))
     return data    
+
+def weather_data(file_path):
+    weather_path = Path(file_path)
+    weather_df = pd.read_csv(
+    weather_path, index_col="Date", infer_datetime_format=True, parse_dates=True)
+    weather_df = weather_df.sort_index()
+    weather_df = weather_df.drop(["Departure", "HDD", "CDD", "Precipitation", "New Snow", "Snow Depth" ], axis=1)
+    return weather_df
+
+
+
 
 
 
