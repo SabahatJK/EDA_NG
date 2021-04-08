@@ -48,7 +48,7 @@ def eia_consumption_data_by_series(api_key, series_id):
     response_data = requests.get(api_url)
     # Formatting as json
     data = response_data.json()
-    print(json.dumps(data, indent=4))
+    #print(json.dumps(data, indent=4))
     return data    
 
 def eia_category_info(api_key, category_id="480236"):
@@ -59,7 +59,7 @@ def eia_category_info(api_key, category_id="480236"):
     response_data = requests.get(api_url)
     # Formatting as json
     data = response_data.json()
-    print(json.dumps(data, indent=4))
+    #print(json.dumps(data, indent=4))
     return data    
 
 def weather_data(file_path):
