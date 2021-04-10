@@ -65,7 +65,7 @@ def eia_consumption_data_by_series(api_key, series_id):
     
     return data    
 
-def eia_consumption_data_by_series_df(api_key, series_id, state, stype, start_date, end_date, include_state = False):
+def eia_consumption_data_by_series_df(api_key, series_id, state, stype, start_date, end_date, drop_date = True, include_state = False):
     
     data = eia_consumption_data_by_series(api_key, series_id);
 
@@ -94,9 +94,9 @@ def eia_consumption_data_by_series_df(api_key, series_id, state, stype, start_da
 
     # Set Index
     df_comsumption.set_index("YearMonth", inplace = True)
-
+    if drop_date:
     # Drop date 
-    df_comsumption.drop(columns="DATE", inplace = True)
+        df_comsumption.drop(columns="DATE", inplace = True)
     
     return df_comsumption
 
@@ -218,6 +218,39 @@ def format_strorage_monthly(df_storage_data):
 
     #Verify data
     return df_storage_data_monthly
+
+
+def agg_temperature_monthly(df_temp):
+    # Group by year and then month and get mean
+    df_avg_weather = df_temp.groupby(by=[df_temp.index.year, df_temp.index.month]).mean()
+
+
+    #rename the new multi index
+    df_avg_weather.index.rename("Year", level=0, inplace = True)
+    df_avg_weather.index.rename("Month", level=1, inplace = True)
+
+    # Convert index to columns
+    df_avg_weather = pd.DataFrame(df_avg_weather.to_records()) 
+
+
+    # Add a 0 to months that are single digit
+    df_avg_weather["Month"] = df_avg_weather.Month.map("{:02}".format)
+
+    # Create a single new column to save the year and month
+    df_avg_weather['YearMonth'] = df_avg_weather['Year'].apply(str) + df_avg_weather['Month'].apply(str)
+
+
+    # Create an Date column to convert all dates with the first day of the month
+    df_avg_weather['DATE'] = pd.to_datetime(df_avg_weather["YearMonth"], format="%Y%m")
+
+    # Set index to the YearMonth column
+    df_avg_weather = df_avg_weather.set_index("YearMonth")
+
+    # Drop the year and month Columns
+    df_avg_weather = df_avg_weather.drop(["Year", "Month"], axis=1)
+
+    #Verify data
+    return df_avg_weather
     
 
 
