@@ -36,12 +36,13 @@ import json
 # Input: 
 #    ticker : the ticker to get data for
 # Output: A data frame with date as index and Adj Close prices as the ticker name
-def yfinance_tickers_data(ticker, start_date, end_date):
+def yfinance_tickers_data(ticker, start_date, end_date, drop_extra_cols = True):
     
     
     ticker_data = yf.Ticker(ticker)
     df =ticker_data.history(start=start_date, end=end_date)
-    df = df.drop(["Open", "High", "Low", "Volume", "Dividends", "Stock Splits" ], axis=1)
+    if drop_extra_cols:
+        df = df.drop(["Open", "High", "Low", "Volume", "Dividends", "Stock Splits" ], axis=1)
     return df
     # get ticker object
     #ticker = yf.Ticker(ticker)
