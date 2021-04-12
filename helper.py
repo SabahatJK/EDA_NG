@@ -166,7 +166,9 @@ def agg_price_temperature_monthly(df_price_temp):
     df_avg_price_weather.index.rename("Month", level=1, inplace = True)
 
     # Convert index to columns
-    df_avg_price_weather = pd.DataFrame(df_avg_price_weather.to_records()) 
+    df_avg_price_weather = df_avg_price_weather.reset_index() 
+    
+    #df_avg_price_weather = pd.DataFrame(df_avg_price_weather.to_records()) 
 
 
     # Add a 0 to months that are single digit
@@ -190,7 +192,7 @@ def agg_price_temperature_monthly(df_price_temp):
 
 def format_strorage_monthly(df_storage_data):
     # Group by year and then month and get mean
-    df_storage_data_monthly = df_storage_data.groupby(by=[df_storage_data.index.year, df_storage_data.index.month]).mean()
+    df_storage_data_monthly = df_storage_data.groupby(by=[df_storage_data.index.year, df_storage_data.index.month]).sum()
 
 
     #rename the new multi index
