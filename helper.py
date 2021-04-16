@@ -53,6 +53,7 @@ def yfinance_tickers_data(ticker, start_date, end_date, drop_extra_cols = True):
 
 # Get data for a ticker from yFinance for last 10 years
 # Input: 
+#    api_key : EIA key to load data
 #    ticker : the ticker to get data for
 # Output: json object with data
 def eia_consumption_data_by_series(api_key, series_id):
@@ -66,67 +67,76 @@ def eia_consumption_data_by_series(api_key, series_id):
     
     return data    
 
-def eia_consumption_data_by_series_df(api_key, series_id, state, stype, start_date, end_date, drop_date = True, include_state = False):
+# Get data for a ticker from yFinance for last 10 years
+# Input: 
+#    api_key : EIA key to load data
+#    ticker : the ticker to get data for
+#    stype : Type of consumption, used to name columns
+#    start_date: the start date 
+#    end_date: the end date 
+# Output: dataframe with relevant data
+def eia_consumption_data_by_series_df(api_key, series_id, stype, start_date, end_date):
     
     data = eia_consumption_data_by_series(api_key, series_id);
 
     # create a data frame from the series of date and prices
     df_comsumption  = pd.DataFrame(list(data["series"][0]["data"]))
 
-    str_state = f'{stype} Consumption'
+    str_type = f'{stype} Consumption'
     #Rename the columns from 0 & 1 to YearMonth and Consumption
-    df_comsumption.rename(columns={0: "YearMonth", 1: str_state}, inplace = True)
-    if include_state:
-        df_comsumption["state"] = state 
+    df_comsumption.rename(columns={0: "YearMonth", 1: str_type}, inplace = True)
+
     #Create a date column to select relevant data
-    df_comsumption['DATE'] = pd.to_datetime(df_comsumption["YearMonth"], format="%Y%m")
+    df_comsumption['Date'] = pd.to_datetime(df_comsumption["YearMonth"], format="%Y%m")
 
     # Set datetype as datetime
-    df_comsumption["DATE"].astype('datetime64', copy=False)
+    df_comsumption["Date"].astype('datetime64', copy=False)
 
     # create mask to select only dates in our range
-    mask = (df_comsumption['DATE'] >= start_date) & (df_comsumption['DATE'] <= end_date)
+    mask = (df_comsumption['Date'] >= start_date) & (df_comsumption['Date'] <= end_date)
 
     # Apply mask and get relevant data 
     df_comsumption = df_comsumption.loc[mask]
 
     # Sort values 
-    df_comsumption= df_comsumption.sort_values(by="DATE", ascending = True)
+    df_comsumption= df_comsumption.sort_values(by="Date", ascending = True)
 
     # Set Index
-    df_comsumption.set_index("YearMonth", inplace = True)
-    if drop_date:
+    df_comsumption.set_index("Date", inplace = True)
+    #if drop_date:
     # Drop date 
-        df_comsumption.drop(columns="DATE", inplace = True)
+    df_comsumption.drop(columns="YearMonth", inplace = True)
     
     return df_comsumption
 
-
-def eia_category_info(api_key, category_id="480236"):
-
-    # Create variable to hold request url
-    api_url = f"http://api.eia.gov/category/?api_key={api_key}&category_id={category_id}"
-    # Execute GET request and store response
-    response_data = requests.get(api_url)
-    # Formatting as json
-    data = response_data.json()
-    print(json.dumps(data, indent=4))
-    return data    
-
+# Get weather data form datafile
+# Input: 
+#    state : state for which we need to load data fiile
+#    file_path : Path of file to load
+# Output: dataframe with relevant weather data
 def weather_data(state, file_path):
+    # get OS independent file_path
     weather_path = Path(file_path)
+    # Read CSV with date as index
     weather_df = pd.read_csv(
     weather_path, index_col="Date", infer_datetime_format=True, parse_dates=True)
+    # Sort index
     weather_df = weather_df.sort_index()
+    # Drop unnecessary Columns
     weather_df = weather_df.drop(["Departure", "HDD", "CDD", "Precipitation", "New Snow", "Snow Depth" ], axis=1)
     #weather_df["state"] = state
+    # Rename Column for clarity
     weather_df.rename(columns = {"Average": "Avg Temp"}, inplace = True)
+    
     return weather_df
 
+# Convert daily closing price to monthly closing price
+# Input: 
+#    df_price : daily closing price data
+# Output: dataframe with monthly closing price data
 def agg_stock_closing_price_monthly(df_price):
     # Group by year and then month and get mean
     df_avg_price = df_price.groupby(by=[df_price.index.year, df_price.index.month]).mean()
-
 
     #rename the new multi index
     df_avg_price.index.rename("Year", level=0, inplace = True)
@@ -135,31 +145,32 @@ def agg_stock_closing_price_monthly(df_price):
     # Convert index to columns
     df_avg_price = pd.DataFrame(df_avg_price.to_records()) 
 
-
     # Add a 0 to months that are single digit
     df_avg_price["Month"] = df_avg_price.Month.map("{:02}".format)
 
     # Create a single new column to save the year and month
     df_avg_price['YearMonth'] = df_avg_price['Year'].apply(str) + df_avg_price['Month'].apply(str)
 
-
     # Create an Date column to convert all dates with the first day of the month
-    df_avg_price['DATE'] = pd.to_datetime(df_avg_price["YearMonth"], format="%Y%m")
+    df_avg_price['Date'] = pd.to_datetime(df_avg_price["YearMonth"], format="%Y%m")
 
-    # Set index to the YearMonth column
-    df_avg_price = df_avg_price.set_index("YearMonth")
+    # Set index to the Date column
+    df_avg_price = df_avg_price.set_index("Date")
 
     # Drop the year and month Columns
-    df_avg_price = df_avg_price.drop(["Year", "Month"], axis=1)
+    df_avg_price = df_avg_price.drop(["Year", "Month", "YearMonth"], axis=1)
 
-    #Verify data
+    #return data
     return df_avg_price
 
-
+# Convert daily closing price and temeprature to monthly
+# Input: 
+#    df_price : daily closing price and temeprature dataframe
+# Output: dataframe with monthly closing price  and temeprature data
 def agg_price_temperature_monthly(df_price_temp):
+    
     # Group by year and then month and get mean
     df_avg_price_weather = df_price_temp.groupby(by=[df_price_temp.index.year, df_price_temp.index.month]).mean()
-
 
     #rename the new multi index
     df_avg_price_weather.index.rename("Year", level=0, inplace = True)
@@ -179,21 +190,24 @@ def agg_price_temperature_monthly(df_price_temp):
 
 
     # Create an Date column to convert all dates with the first day of the month
-    df_avg_price_weather['DATE'] = pd.to_datetime(df_avg_price_weather["YearMonth"], format="%Y%m")
+    df_avg_price_weather['Date'] = pd.to_datetime(df_avg_price_weather["YearMonth"], format="%Y%m")
 
     # Set index to the YearMonth column
-    df_avg_price_weather = df_avg_price_weather.set_index("YearMonth")
+    df_avg_price_weather = df_avg_price_weather.set_index("Date")
 
     # Drop the year and month Columns
-    df_avg_price_weather = df_avg_price_weather.drop(["Year", "Month"], axis=1)
+    df_avg_price_weather = df_avg_price_weather.drop(["Year", "Month", "YearMonth"], axis=1)
 
-    #Verify data
+    #return data
     return df_avg_price_weather
 
+# Convert weekly storage to monthly
+# Input: 
+#    df_storage_data : weekly Storage dataframe
+# Output: dataframe with monthly storage
 def format_strorage_monthly(df_storage_data):
     # Group by year and then month and get mean
     df_storage_data_monthly = df_storage_data.groupby(by=[df_storage_data.index.year, df_storage_data.index.month]).sum()
-
 
     #rename the new multi index
     df_storage_data_monthly.index.rename("Year", level=0, inplace = True)
@@ -211,18 +225,21 @@ def format_strorage_monthly(df_storage_data):
 
 
     # Create an Date column to convert all dates with the first day of the month
-    df_storage_data_monthly['DATE'] = pd.to_datetime(df_storage_data_monthly["YearMonth"], format="%Y%m")
+    df_storage_data_monthly['Date'] = pd.to_datetime(df_storage_data_monthly["YearMonth"], format="%Y%m")
 
     # Set index to the YearMonth column
-    df_storage_data_monthly = df_storage_data_monthly.set_index("YearMonth")
+    df_storage_data_monthly = df_storage_data_monthly.set_index("Date")
 
     # Drop the year and month Columns
-    df_storage_data_monthly = df_storage_data_monthly.drop(["Year", "Month"], axis=1)
+    df_storage_data_monthly = df_storage_data_monthly.drop(["Year", "Month", "YearMonth"], axis=1)
 
-    #Verify data
+    #return data
     return df_storage_data_monthly
 
-
+# Convert daily temperature to monthly
+# Input: 
+#    df_temp : daily temeparture dataframe
+# Output: dataframe with monthly temeprature
 def agg_temperature_monthly(df_temp):
     # Group by year and then month and get mean
     df_avg_weather = df_temp.groupby(by=[df_temp.index.year, df_temp.index.month]).mean()
@@ -244,15 +261,15 @@ def agg_temperature_monthly(df_temp):
 
 
     # Create an Date column to convert all dates with the first day of the month
-    df_avg_weather['DATE'] = pd.to_datetime(df_avg_weather["YearMonth"], format="%Y%m")
+    df_avg_weather['Date'] = pd.to_datetime(df_avg_weather["YearMonth"], format="%Y%m")
 
     # Set index to the YearMonth column
-    df_avg_weather = df_avg_weather.set_index("YearMonth")
+    df_avg_weather = df_avg_weather.set_index("Date")
 
     # Drop the year and month Columns
-    df_avg_weather = df_avg_weather.drop(["Year", "Month"], axis=1)
+    df_avg_weather = df_avg_weather.drop(["Year", "Month", "YearMonth"], axis=1)
 
-    #Verify data
+    #return data
     return df_avg_weather
     
 
