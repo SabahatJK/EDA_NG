@@ -116,41 +116,44 @@ def eia_consumption_data_by_series(api_key, series_id):
 #    end_date: the end date 
 # Output: dataframe with relevant data
 def eia_consumption_data_by_series_df(api_key, series_id, stype, start_date, end_date):
-    
-    try:
-        data = eia_consumption_data_by_series(api_key, series_id);
+    if (api_key == None ) or (api_key == ""):
+        print("Enviroment Variable for EIA API KEY is not found, please verify your .env file")
+        raise KeyError("Enviroment Variable for EIA API KEY is not found, please verify your .env file") 
+    else:
+        try:
+            data = eia_consumption_data_by_series(api_key, series_id);
 
-        # create a data frame from the series of date and prices
-        df_comsumption  = pd.DataFrame(list(data["series"][0]["data"]))
+            # create a data frame from the series of date and prices
+            df_comsumption  = pd.DataFrame(list(data["series"][0]["data"]))
 
-        str_type = f'{stype} Consumption'
-        #Rename the columns from 0 & 1 to YearMonth and Consumption
-        df_comsumption.rename(columns={0: "YearMonth", 1: str_type}, inplace = True)
+            str_type = f'{stype} Consumption'
+            #Rename the columns from 0 & 1 to YearMonth and Consumption
+            df_comsumption.rename(columns={0: "YearMonth", 1: str_type}, inplace = True)
 
-        #Create a date column to select relevant data
-        df_comsumption['Date'] = pd.to_datetime(df_comsumption["YearMonth"], format="%Y%m")
+            #Create a date column to select relevant data
+            df_comsumption['Date'] = pd.to_datetime(df_comsumption["YearMonth"], format="%Y%m")
 
-        # Set datetype as datetime
-        df_comsumption["Date"].astype('datetime64', copy=False)
+            # Set datetype as datetime
+            df_comsumption["Date"].astype('datetime64', copy=False)
 
-        # create mask to select only dates in our range
-        mask = (df_comsumption['Date'] >= start_date) & (df_comsumption['Date'] <= end_date)
+            # create mask to select only dates in our range
+            mask = (df_comsumption['Date'] >= start_date) & (df_comsumption['Date'] <= end_date)
 
-        # Apply mask and get relevant data 
-        df_comsumption = df_comsumption.loc[mask]
+            # Apply mask and get relevant data 
+            df_comsumption = df_comsumption.loc[mask]
 
-        # Sort values 
-        df_comsumption= df_comsumption.sort_values(by="Date", ascending = True)
+            # Sort values 
+            df_comsumption= df_comsumption.sort_values(by="Date", ascending = True)
 
-        # Set Index
-        df_comsumption.set_index("Date", inplace = True)
-        #if drop_date:
-        # Drop date 
-        df_comsumption.drop(columns="YearMonth", inplace = True)
+            # Set Index
+            df_comsumption.set_index("Date", inplace = True)
+            #if drop_date:
+            # Drop date 
+            df_comsumption.drop(columns="YearMonth", inplace = True)
 
-        return df_comsumption
-    except Exception as e:
-        raise(e)
+            return df_comsumption
+        except Exception as e:
+             raise(e)
         
         
         
