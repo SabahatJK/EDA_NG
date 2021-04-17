@@ -1,6 +1,9 @@
 # Natural Gas Analysis
 ## Overview
 Analysis of Natural Gas Stock Closing price with storage, consumption and temeprature.
+
+The purpose of this project is to find the correlation between natural gas price and temperature. We initially start with the hope that there is a strong correlation between natural gas price and temperature. But the analysis we performed did not show the correlation we expected. We also compare natural gas prices with natural gas storage and natural gas consumption in the US. We found a strong correlation between temperature, NG storage, and NG consumption but no with NG price. 
+
 ## Prerequisites:
 - Data Folder in jupyter notebook directory and contains the following files
     - Pittsburg_Area_Temp_2010-2014.csv and Pittsburg_Temp_2015_2019.csv
