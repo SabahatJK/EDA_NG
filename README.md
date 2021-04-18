@@ -1,8 +1,8 @@
 # Natural Gas Analysis
 ## Overview
-Analysis of Natural Gas Stock Closing price with storage, consumption and temeprature.
+Analysis of Natural Gas Stock Closing price with storage, consumption and temprature.
 
-The purpose of this project was to determine if there's a relationship between temperature and the price of natural gas. We initially started with the hope of identifying a strong correlation between temperature and natural gas price. But the analysis we performed did not show the relationship we expected. We also analyzed natural gas storage and consumption to determine if temperature impacted either and if either had an impact on natural gas prices.  We found a strong relationship between temperature, NG storage, and NG consumption but no with NG price. We created a regression model that reasonably predicted residential natural gas consumption when using out of sample data.
+The purpose of this project was to determine if there's a relationship between temperature and the price of natural gas. We initially started with the hope of identifying a strong correlation between temperature and natural gas (NG) price. But the analysis we performed did not show the relationship we expected. We also analyzed NG storage and consumption to determine if temperature impacted either and if either had an impact on NG prices.  We found a strong relationship between temperature, NG storage, and NG consumption but not with NG price. As part of our analysis we created a regression model that predicted residential natural gas consumption as a function of temperature. When testing the model with out of sample data it performed reasonably well.
 
 ## Prerequisites:
 - Data Folder a folder where the analysis notebook file is located, contains the following data files:
