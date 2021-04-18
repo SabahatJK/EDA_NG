@@ -2,7 +2,7 @@
 ## Overview
 Analysis of Natural Gas Stock Closing price with storage, consumption and temeprature.
 
-The purpose of this project is to find the correlation between natural gas price and temperature. We initially start with the hope that there is a strong correlation between natural gas price and temperature. But the analysis we performed did not show the correlation we expected. We also compare natural gas prices with natural gas storage and natural gas consumption in the US. We found a strong correlation between temperature, NG storage, and NG consumption but no with NG price. 
+The purpose of this project was to determine if there's a relationship between temperature and the price of natural gas. We initially started with the hope of identifying a strong correlation between temperature and natural gas price. But the analysis we performed did not show the relationship we expected. We also analyzed natural gas storage and consumption to determine if temperature impacted either and if either had an impact on natural gas prices.  We found a strong relationship between temperature, NG storage, and NG consumption but no with NG price. We created a regression model that reasonably predicted residential natural gas consumption when using out of sample data.
 
 ## Prerequisites:
 - Data Folder a folder where the analysis notebook file is located, contains the following data files:
@@ -21,6 +21,7 @@ The purpose of this project is to find the correlation between natural gas price
     - Monte_Carlo.txt: Overview of the Monte_Carlo
 
 - .env file located in the analysis notebook folder with EIA_API_KEY=<<EIA_API_KEY>> 
+- Click the hyperlink to obtain your own [EIA_API_KEY](https://www.eia.gov/opendata/register.php) 
 - anaconda environment: A combination of the both dev and Pyviz (as installed in class). Clone dev environment and install Pyviz on it. It needs Pandas, Numpy, Alpaca, Yfinance, plotly go, requests, dotenv, json etc.
 
 
