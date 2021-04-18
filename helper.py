@@ -82,8 +82,10 @@ def yfinance_tickers_data(ticker, start_date, end_date, drop_extra_cols = True):
         if len(df) > 0 and drop_extra_cols:
             df = df.drop(["Open", "High", "Low", "Volume", "Dividends", "Stock Splits" ], axis=1)
         return df
+    
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An Error occurred while fetching and formatting data for {ticker} from yfinance  \n DETAILS: {repr(e)}")
+        raise
         
     
     
@@ -102,10 +104,17 @@ def eia_consumption_data_by_series(api_key, series_id):
         response_data = requests.get(api_url)
         # Formatting as json
         data = response_data.json()
-
-        return data
+        # convert json to string
+        data_str = json.dumps(data)
+        #print(data_str)
+        # check if an error was returned in json
+        if  data_str.find("error") != -1 :
+            raise RuntimeError(data["data"])
+        return data      
     except Exception as e:
-        raise(e)
+        print(f"ERROR:An  Error Occured while fetching data for series from EIA API  \n DETAILS: {str(e)}") 
+        raise
+        
    
 # Get series data from EIA and fetch only between start_date and end_date
 # Input: 
@@ -116,44 +125,42 @@ def eia_consumption_data_by_series(api_key, series_id):
 #    end_date: the end date 
 # Output: dataframe with relevant data
 def eia_consumption_data_by_series_df(api_key, series_id, stype, start_date, end_date):
-    if (api_key == None ) or (api_key == ""):
-        print("Enviroment Variable for EIA API KEY is not found, please verify your .env file")
-        raise KeyError("Enviroment Variable for EIA API KEY is not found, please verify your .env file") 
-    else:
-        try:
-            data = eia_consumption_data_by_series(api_key, series_id);
+    try:
+        data = eia_consumption_data_by_series(api_key, series_id);
 
-            # create a data frame from the series of date and prices
-            df_comsumption  = pd.DataFrame(list(data["series"][0]["data"]))
+        # create a data frame from the series of date and prices
+        df_comsumption  = pd.DataFrame(list(data["series"][0]["data"]))
 
-            str_type = f'{stype} Consumption'
-            #Rename the columns from 0 & 1 to YearMonth and Consumption
-            df_comsumption.rename(columns={0: "YearMonth", 1: str_type}, inplace = True)
+        str_type = f'{stype} Consumption'
+        #Rename the columns from 0 & 1 to YearMonth and Consumption
+        df_comsumption.rename(columns={0: "YearMonth", 1: str_type}, inplace = True)
 
-            #Create a date column to select relevant data
-            df_comsumption['Date'] = pd.to_datetime(df_comsumption["YearMonth"], format="%Y%m")
+        #Create a date column to select relevant data
+        df_comsumption['Date'] = pd.to_datetime(df_comsumption["YearMonth"], format="%Y%m")
 
-            # Set datetype as datetime
-            df_comsumption["Date"].astype('datetime64', copy=False)
+        # Set datetype as datetime
+        df_comsumption["Date"].astype('datetime64', copy=False)
 
-            # create mask to select only dates in our range
-            mask = (df_comsumption['Date'] >= start_date) & (df_comsumption['Date'] <= end_date)
+        # create mask to select only dates in our range
+        mask = (df_comsumption['Date'] >= start_date) & (df_comsumption['Date'] <= end_date)
 
-            # Apply mask and get relevant data 
-            df_comsumption = df_comsumption.loc[mask]
+        # Apply mask and get relevant data 
+        df_comsumption = df_comsumption.loc[mask]
 
-            # Sort values 
-            df_comsumption= df_comsumption.sort_values(by="Date", ascending = True)
+        # Sort values 
+        df_comsumption= df_comsumption.sort_values(by="Date", ascending = True)
 
-            # Set Index
-            df_comsumption.set_index("Date", inplace = True)
-            #if drop_date:
-            # Drop date 
-            df_comsumption.drop(columns="YearMonth", inplace = True)
+        # Set Index
+        df_comsumption.set_index("Date", inplace = True)
+        #if drop_date:
+        # Drop date 
+        df_comsumption.drop(columns="YearMonth", inplace = True)
 
-            return df_comsumption
-        except Exception as e:
-             raise(e)
+        return df_comsumption
+    except Exception as e:
+        print(f"ERROR: An Error occurred while fetching data for series from EIA API into dataframe \n DETAILS: {repr(e)}") 
+        raise
+
         
         
         
@@ -179,11 +186,14 @@ def weather_data(state, file_path):
 
         return weather_df
     except FileNotFoundError as e:
-        raise(e)
+        print(f"ERROR: Weather File not found {file_path} \n DETAILS: ")
+        raise
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while loading file {file_path} \n DETAILS: {repr(e)}") 
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while loading file {file_path} \n DETAILS: {repr(e)}") 
+        raise
     
 
 # Convert daily closing price to monthly closing price
@@ -220,10 +230,13 @@ def agg_stock_closing_price_monthly(df_price):
         #return data
         return df_avg_price
     
-    except ValueError as e:
-        raise(e)
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while converting the daily Closing Price to monthly \n DETAILS: {repr(e)}") 
+        raise
+
+    except Exception as e:
+        print(f"ERROR: An error occurred while converting the daily Closing Price to monthly \n DETAILS: {repr(e)}")         
+        raise
 
         
 # Convert daily closing price and temeprature to monthly
@@ -266,9 +279,11 @@ def agg_price_temperature_monthly(df_price_temp):
         return df_avg_price_weather
     
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while converting the daily Closing Price and Temperature to monthly \n DETAILS: {repr(e)}")        
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while converting the daily Closing Price and Temperature to monthly \n DETAILS: {repr(e)}")       
+        raise
 
 # Convert weekly storage to monthly
 # Input: 
@@ -307,9 +322,11 @@ def format_strorage_monthly(df_storage_data):
         return df_storage_data_monthly
     
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while converting the weekly Storage to monthly \n DETAILS: {repr(e)}")       
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while converting the weekly Storage to monthly \n DETAILS: {repr(e)}")  
+        raise
 
 # Convert daily temperature to monthly
 # Input: 
@@ -350,9 +367,11 @@ def agg_temperature_monthly(df_temp):
         return df_avg_weather
 
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while converting the daily Temperature to monthly  \n DETAILS: {repr(e)}")          
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while converting the daily Temperature to monthly  \n DETAILS: {repr(e)}")          
+        raise
     
 
 
@@ -427,9 +446,16 @@ def load_data(region_info, eia_api_key, start_date, end_date, df_storage_monthly
 
         return dfs
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while loading data for weather, consumption & storage \n DETAILS: {repr(e)}")
+        raise
+    except KeyError as e:
+        print(f"ERROR: An error occurred while loading data for weather, consumption & storage \n DETAILS: {repr(e)}") 
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while loading data for weather, consumption & storage  \n DETAILS: {repr(e)}") 
+        raise
+
+
 
  
    
@@ -472,9 +498,11 @@ def linear_regression(x, y, shift_period = 90):
         return r_sq, model, y_pred
     
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while computing Linear Regression \n DETAILS: {repr(e)}")         
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while computing Linear Regression \n DETAILS: {repr(e)}")         
+        raise
 
 # Compute Linear regresssion between all relevant variables and load data 
 # input:
@@ -602,9 +630,11 @@ def compute_linear_regression(dfs):
         return df_linear_regression
 
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while computing  and loading all needed Linear Regression  \n DETAILS: {repr(e)}")          
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An error occurred while computing and loading all needed  Linear Regression \n DETAILS: {repr(e)}")                   
+        raise
     
 
 #Test the Pittsburg model with out of sample data
@@ -664,9 +694,11 @@ def predictied_linear_regression_temp_comsumption(region_dfs, eia_api_key, state
 
         return df_out_sample_combined
     except ValueError as e:
-        raise(e)
+        print(f"ERROR: An error occurred while computing Linear Reession for out of Sample for Consumption and Temeparure for PA  \n DETAILS: {repr(e)}")          
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: Error occurred while computing Linear Reession for out of Sample for Consumption and Temeparure for PA  \n DETAILS: {repr(e)}")            
+        raise
 
 
 def read_text_file(file_path):
@@ -676,9 +708,11 @@ def read_text_file(file_path):
         return text
 
     except FileNotFoundError as e:
-        raise(e)
+        print(f"ERROR: File not found {file_path} ")           
+        raise
     except Exception as e:
-        raise(e)
+        print(f"ERROR: An Error occurred file loading file {file_path} \n DETAILS: {repr(e)}")                   
+        raise
             
 
 
