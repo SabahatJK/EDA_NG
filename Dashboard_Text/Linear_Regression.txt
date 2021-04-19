@@ -1,5 +1,6 @@
 <h3> Linear Regression </h3>
 
-<p>Four linear regression models that explore the relationship between natural gas closing price and temperature, 
-and storage.<p>
-<p>Select one or both of the Lag checkboxes and then move the slider to see how the relationship adjusts when different elements are lagged.<p>   
+<p>Four linear regression models that explore the relationship between natural gas closing price and temperature,<p> 
+<p>storage and residential consumption, temperature and residential consumption, and storage and temperature.<p>
+<p>Also includes, a visual representation of the out of sample linear regression model for temperature and residential consumption.<p>
+<p>The out of sample analysis takes temperature data for Pittsburg from 2015 through 2019 and compares actual consumption with predicted consumption.<p>   
