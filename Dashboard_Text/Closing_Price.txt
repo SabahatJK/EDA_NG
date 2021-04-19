@@ -1,4 +1,4 @@
 <h3>Closing Prices Analysis</h3>
 
-<p>Visual representation of the relationship between the closing price of natural gas and temeprature, storage, and consumption.<p>
+<p>Visual representation of the relationship between the closing price of natural gas and temperature, storage, and consumption.<p>
 <p>Select one or both of the Lag checkboxes and then move the slider to see how the relationship adjusts when different elements are lagged.<p>   
