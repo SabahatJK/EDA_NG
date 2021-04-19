@@ -1,1 +1,5 @@
 <h3> Linear Regression </h3>
+
+<p>Four linear regression models that explore the relationship between natural gas closing price and temperature, 
+and storage.<p>
+<p>Select one or both of the Lag checkboxes and then move the slider to see how the relationship adjusts when different elements are lagged.<p>   
