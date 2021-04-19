@@ -1,1 +1,3 @@
 <h3> Monte Carlo </h3>
+
+<p>A 500 trial Monte Carlo simulation that predicts, with 95% confidence, the closing price of natural at the end of the next 5 years.<p> 
