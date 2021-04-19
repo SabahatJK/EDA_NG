@@ -26,7 +26,8 @@
 
 
 <p><b>Our Conclusion: We found a strong relationship between Temperature, NG storage, and NG consumption but not with NG price in most states.  
-Residential consumption and Temperature had a strong relationship in all states. The storage and consumption had a strong relationship in all colder states, but less iso n TX and even less in CA. Storage and Temperature had similar results.  </b></p>
+Residential consumption and Temperature had a strong relationship in all states. When storage or consumption are lagged a relationship is revealed 
+that tends to be stronger in the colder states, but less so in TX and even less in CA. Storage and Temperature had similar results.  </b></p>
 
 
 
