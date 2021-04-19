@@ -1,1 +1,4 @@
 <h3>Storage Analysis </h3>
+
+<p>Visual representation of the relationship between the storage of natural gas and closing price, temperature, and consumption.<p>
+<p>Select one or both of the Lag checkboxes and then move the slider to see how the relationship adjusts when different elements are lagged.<p>   
