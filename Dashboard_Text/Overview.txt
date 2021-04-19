@@ -2,10 +2,13 @@
 
 <h4>Falsifiable Hypothesis: Temperature does not influence the price of natural gas. </h4>
 
-<p> The initial purpose of this project was to disprove the above hypothesis. We pulled five years of daily historical NG stock closing prices (2010 - 2014) using yfinace API. We then identified five major cities across the US (Pitsburg, Hartford, Chicago, Texas, and Los Angelus)  and collected daily weather data for the same period to perform the analysis. Since we could not find a free API to pull historical weather data, we had to download the data from various sources, such as National Weather Service for each city.  Our analysis did not result in any relationship between temperature and the price of natural gas. 
-<p>
-<br/>
+<p>The initial purpose of this project was to disprove the above hypothesis. </p><br/>
+<p>We pulled five years of daily historical NG stock closing prices (2010 - 2014) using yfinace API.</p><br/>
+<p>We then identified five major cities across the US (Pitsburg, Hartford, Chicago, Texas, and Los Angelus)  and collected daily weather data for the same period to perform the analysis. Since we could not find a free API to pull historical weather data, we had to download the data from various sources, such as National Weather Service for each city.  Our analysis did not result in any relationship between temperature and the price of natural gas. 
+</p>
 
+<br/>
+<p>
 <b>Our Conclusion : We could not disprove our hypothesis.</b>
 </p>
 <br/>
@@ -13,13 +16,17 @@
 <h4>Additional relationships examined.</h4>
 <p>
 We also analyzed NG storage and consumption to determine if temperature impacted either if either had an impact on NG prices or  each other.</p>
-<p>
-We used US Energy Information Administration (<a href=' https://www.eia.gov/naturalgas/'>EIA</a>) API to pull the consumption data.  Since this data is only available for states (not cities) and only in monthly or annual format,  we used the states in which the cities mentioned above are located (namely PA, CT, IL, TX, and CA as well as the whole US) and used the monthly data.  As the weather and stock prices data were daily, we converted it to monthly to perform the analysis with consumption.
-<p>  
-<p>The Storage Data was downloaded from EIA website. This data is only available weekly format and for regions (East Region, Midwest Region, Mountain Region, Pacific Region, South Central Region, and Total Lower 48 States region) not states. We had mapped the states mentioned above to regions and converted the weekly storage data to monthly to perform the analysis.  The Lower 48 Region was mapped to the whole US.  <p>
-<p>
 <br/>
-<b>Our Conclusion</b> : We found a strong relationship between temperature, NG storage, and NG consumption but not with NG price.
+<p>
+We used US Energy Information Administration (<a href=' https://www.eia.gov/naturalgas/'>EIA</a>) API to pull the consumption data.  Since this data is only available for states (not cities) and only in monthly or annual format,  we used the states in which the cities mentioned above are located (namely PA, CT, IL, TX, and CA as well as the whole US) and used the monthly data.  As the weather and stock prices data were daily, we converted it to monthly to perform the analysis with consumption. </p>
+ <br/>
+<p>The Storage Data was downloaded from EIA website. This data is only available weekly format and for regions (East Region, Midwest Region, Mountain Region, Pacific Region, South Central Region, and Total Lower 48 States region) not states. We had mapped the states mentioned above to regions and converted the weekly storage data to monthly to perform the analysis.  The Lower 48 Region was mapped to the whole US.  </p>
+<br/>
+<p>As part of our analysis we created a regression model that predicted residential natural gas consumption as a function of temperature. When testing the model with out of sample data it performed reasonably well. </p>
+
+<br/>
+<p>
+<b>Our Conclusion : We found a strong relationship between temperature, NG storage, and NG consumption but not with NG price.</b>
 </p>
 <br/>
 <p> Each tab in the dashboard is a visual representation of analysis we performed.</p>
