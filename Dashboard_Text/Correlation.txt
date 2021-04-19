@@ -1,4 +1,4 @@
-<h3>Regional Correlation b/w Closing Price, Comsumption, Storage and Average Temperature(if applicable)<h3>
+<h3>Regional Correlation b/w Closing Price, Comsumption, Storage and Average Temperature(if applicable)</h3>
 
 <p>Correlation matrix and heatmap that illuminates the relationships between natural gas closing prices, consumption, storage, and temperature.<p>
 <p>Select any of the Lag checkboxes and then move the slider to see how the relationship adjusts when different elements are lagged.<p>
