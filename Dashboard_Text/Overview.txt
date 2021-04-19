@@ -6,29 +6,30 @@
 
 <p>We pulled five years of daily historical NG stock closing prices (2010 - 2014) using yfinace API.</p>
 
-<p>We then identified five major cities across the US (Pitsburg, Hartford, Chicago, Texas, and Los Angelus)  and collected daily weather data for the same period to perform the analysis. Since we could not find a free API to pull historical weather data, we had to download the data from various sources, such as National Weather Service for each city.  Our analysis did not result in any relationship between temperature and the price of natural gas.</p>
+<p>We then identified five major cities across the US (Pitsburg, Hartford, Chicago, Texas, and Los Angelus)  and collected daily weather data for the same period to perform the analysis. Since we could not find a free API to pull historical weather data, we had to download the data from various sources, such as National Weather Service for each city.  Our analysis did not result in any relationship between Temperature and the price of natural gas.</p>
 
 <p><b>Our Conclusion : We could not disprove our hypothesis.</b></p>
 
 <br/>
 <h4>Additional relationships examined.</h4>
 
-<p>We also analyzed NG storage and consumption to determine if temperature impacted either if either had an impact on NG prices or  each other.</p>
+<p>We also analyzed NG storage and consumption to determine if Temperature impacted either if either had an impact on NG prices or  each other.</p>
 
 
 <p>We used US Energy Information Administration (<a href=' https://www.eia.gov/naturalgas/'>EIA</a>) API to pull the consumption data.  Since this data is only available for states (not cities) and only in monthly or annual format,  we used the states in which the cities mentioned above are located (namely PA, CT, IL, TX, and CA as well as the whole US) and used the monthly data.  As the weather and stock prices data were daily, we converted it to monthly to perform the analysis with consumption. </p>
 
 
-<p>The Storage Data was downloaded from EIA website. This data is only available weekly format and for regions (East Region, Midwest Region, Mountain Region, Pacific Region, South Central Region, and Total Lower 48 States region) not states. We had mapped the states mentioned above to regions and converted the weekly storage data to monthly to perform the analysis.  The Lower 48 Region was mapped to the whole US.  </p>
+<p>The Storage Data was downloaded from the EIA website. This data is only available weekly and for regions (East Region, Midwest Region, Mountain Region, Pacific Region, South Central Region, and Total Lower 48 States region), not states. We had mapped the states mentioned above to regions and converted the weekly storage data to monthly to perform the analysis.  The Lower 48 Region was mapped to the whole US.  </p>
 
 
-<p>As part of our analysis we created a regression model that predicted residential natural gas consumption as a function of temperature. When testing the model with out of sample data it performed reasonably well. </p>
+<p>As part of our analysis, we created a regression model that predicted residential natural gas consumption as a function of Temperature. When testing the model with out-of-sample data, it performed reasonably well. </p>
 
 
-<p><b>Our Conclusion : We found a strong relationship between temperature, NG storage, and NG consumption but not with NG price.</b></p>
+<p><b>Our Conclusion: We found a strong relationship between Temperature, NG storage, and NG consumption but not with NG price in most states.  
+Residential consumption and Temperature had a strong relationship in all states. The storage and consumption had a strong relationship in all colder states, but less iso n TX and even less in CA. Storage and Temperature had similar results.  </b></p>
 
 
 
-<p> Each tab in the dashboard is a visual representation of analysis we performed.</p>
+<p> Each tab in the dashboard is a visual representation of the analysis we performed.</p>
 
  
