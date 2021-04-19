@@ -1,1 +1,4 @@
 <h3>Comsunption Analysis</h3>
+
+<p>Visual representation of the relationship between natural gas consumption and closing price, temperature, and storage.<p>
+<p>Select one or both of the Lag checkboxes and then move the slider to see how the relationship adjusts when different elements are lagged.<p>   
